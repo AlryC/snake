@@ -1,31 +1,30 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#include "object.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef struct Link Link;
+typedef struct SnakeLink SnakeLink;
 typedef struct Snake Snake;
 typedef enum Direction {
     up, right, down, left
 } Direction;
 
-struct Link
+struct SnakeLink
 {
-    int x;
-    int y;
-    Link *next;
-    Link *prev;
+    Object base;
+    SnakeLink *next;
+    SnakeLink *prev;
 };
 
 struct Snake
 {
     Direction direction;
-    Link *head;
-    Link *tail;
+    SnakeLink *head;
+    SnakeLink *tail;
 };
 
-void stepSnake(Snake* snake, void (*updateDestroyedLinkFunc)(Link*, bool));
-void destroyLink(Link* link);
+void stepSnake(Snake* snake);
 Snake newSnake();
 #endif

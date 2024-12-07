@@ -4,21 +4,15 @@
 #include <stdio.h>       // Standart Input/Output Library
 #include <time.h>        // Clock
 #include <termios.h>     // Managing termnial in Linux/MacOS
+#include "./lib/object.h"// Field building blocks
 #include "./lib/snake.h" // Snake ~~~~~~~~~~>
 
-enum Color {
-    White,
-    Gray,
-    Green,
-    Red,
-} foregroundColor = White;
-
-short field[FIELD_HEIGHT][FIELD_WIDTH];
+enum Color foregroundColor = White;
+//short field[FIELD_HEIGHT][FIELD_WIDTH];
+short** field;
 Snake s;
 int key;
 
-void  setForegroundColor(enum Color color);
-void  updateLink(Link* body, bool created);
 void  printField();
 int   steptime();
 void* listenKeyPress();
@@ -26,7 +20,6 @@ void* mainWhile();
 
 int main(void)
 {
-
     /*--------- Set terminal into the "raw" mode ---------*/
     struct termios info;
     // Get current terminal attirbutes; 0 is the file descriptor for stdin
@@ -46,14 +39,25 @@ int main(void)
     // Return cursor to the start
     printf("\e[0;0H");
 
+    // Print the field out;
     printField();
     
+    // Allocate memory for the field 2D array
+    field = (short**)malloc(FIELD_HEIGHT * sizeof(short*));
+    for (int i = 0; i < FIELD_HEIGHT; i++) 
+    {
+        field[i] = (short*)malloc(FIELD_WIDTH * sizeof(short));
+    }
+
+    // Initialise seed for rand() function
+    srand(time(NULL));
+
     // Initialise a snake instance
     s = newSnake();
     // Draw the snake
-    updateLink(s.head, true); 
-    updateLink(s.head->next, true);
-    updateLink(s.tail, true);
+    printObject(&s.head->base, false); 
+    printObject(&s.head->next->base, false);
+    printObject(&s.tail->base, false);
 
     
     // Start 2 threads: 1 for keypresses and 1 for the while game cycle
@@ -107,7 +111,7 @@ void* mainWhile()
                     break;
             }
 
-            stepSnake(&s, &updateLink);
+            stepSnake(&s);
             stepdelta = steptime();
         }
     }
@@ -127,21 +131,6 @@ int steptime()
     return clock() / 200000;
 }
 
-void updateLink(Link* body, bool created)
-{
-    setForegroundColor(Green);
-    printf("\e[%d;%dH", body->y, body->x);
-    if(created)
-    {
-        printf("@");
-    }
-    else 
-    { 
-        printf(" ");
-    }
-    fflush(stdout);
-}
-
 void  setForegroundColor(enum Color color)
 {
     if(foregroundColor != color)
@@ -149,10 +138,11 @@ void  setForegroundColor(enum Color color)
         foregroundColor = color;
         switch (color) 
         {
-            case White: printf("%s", ESC_COLOR_WHITE); break;
-            case Gray:  printf("%s", ESC_COLOR_GRAY);  break;
-            case Green: printf("%s", ESC_COLOR_GREEN); break;
-            case Red:   printf("%s", ESC_COLOR_RED);   break;
+            case White:   printf("%s", ESC_COLOR_WHITE);   break;
+            case Gray:    printf("%s", ESC_COLOR_GRAY);    break;
+            case Green:   printf("%s", ESC_COLOR_GREEN);   break;
+            case Red:     printf("%s", ESC_COLOR_RED);     break;
+            case Magenta: printf("%s", ESC_COLOR_MAGENTA); break; 
         }
     }
 }

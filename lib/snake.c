@@ -1,13 +1,15 @@
 #include "snake.h"
+#include "object.h"
+#include <stdbool.h>
 #include <stdio.h>
 
 Snake newSnake()
 {
     Snake python;
 
-    static Link head = {.x = 12, .y = 10};
-    static Link body = {.x = 11, .y = 10};
-    static Link tail = {.x = 10, .y = 10};
+    static SnakeLink head = {.base.x = 12, .base.y = 10, .base.type = Snakebody};
+    static SnakeLink body = {.base.x = 11, .base.y = 10, .base.type = Snakebody};
+    static SnakeLink tail = {.base.x = 10, .base.y = 10, .base.type = Snakebody};
     
     head.next = &body;
     body.prev = &head;
@@ -21,15 +23,14 @@ Snake newSnake()
     return python;
 }
 
-void stepSnake(Snake* snake, void (*updateLinkFunc)(Link*, bool))
+void stepSnake(Snake* snake)
 {
-    // printf("frog");
     // Undraw tail element
-    (*updateLinkFunc)(snake->tail, false);
+    printObject(&snake->tail->base, true);
 
     // Copy head coordinates into tail
-    snake->tail->x = snake->head->x;
-    snake->tail->y = snake->head->y;
+    snake->tail->base.x = snake->head->base.x;
+    snake->tail->base.y = snake->head->base.y;
     
     snake->tail->next = snake->head;
 
@@ -41,12 +42,12 @@ void stepSnake(Snake* snake, void (*updateLinkFunc)(Link*, bool))
 
     switch (snake->direction) 
     {
-        case up: snake->head->y--; break;
-        case left: snake->head->x--; break;
-        case down: snake->head->y++; break;
-        case right: snake->head->x++; break;
+        case up: snake->head->base.y--; break;
+        case left: snake->head->base.x--; break;
+        case down: snake->head->base.y++; break;
+        case right: snake->head->base.x++; break;
     }
 
     // Draw new head element
-    (*updateLinkFunc)(snake->head, true);
+    printObject(&snake->head->base, false);
 }
