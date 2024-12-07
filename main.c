@@ -1,3 +1,4 @@
+#include "main.h"        // Custom symbolic names
 #include <pthread.h>     // Multithreading
 #include <stdbool.h>     // Booleans
 #include <stdio.h>       // Standart Input/Output Library
@@ -5,9 +6,18 @@
 #include <termios.h>     // Managing termnial in Linux/MacOS
 #include "./lib/snake.h" // Snake ~~~~~~~~~~>
 
+enum Color {
+    White,
+    Gray,
+    Green,
+    Red,
+} foregroundColor = White;
+
+short field[FIELD_HEIGHT][FIELD_WIDTH];
 Snake s;
 int key;
 
+void  setForegroundColor(enum Color color);
 void  updateLink(Link* body, bool created);
 void  printField();
 int   steptime();
@@ -37,7 +47,7 @@ int main(void)
     printf("\e[0;0H");
 
     printField();
-
+    
     // Initialise a snake instance
     s = newSnake();
     // Draw the snake
@@ -119,6 +129,7 @@ int steptime()
 
 void updateLink(Link* body, bool created)
 {
+    setForegroundColor(Green);
     printf("\e[%d;%dH", body->y, body->x);
     if(created)
     {
@@ -131,31 +142,64 @@ void updateLink(Link* body, bool created)
     fflush(stdout);
 }
 
+void  setForegroundColor(enum Color color)
+{
+    if(foregroundColor != color)
+    {
+        foregroundColor = color;
+        switch (color) 
+        {
+            case White: printf("%s", ESC_COLOR_WHITE); break;
+            case Gray:  printf("%s", ESC_COLOR_GRAY);  break;
+            case Green: printf("%s", ESC_COLOR_GREEN); break;
+            case Red:   printf("%s", ESC_COLOR_RED);   break;
+        }
+    }
+}
+
 void printField()
 {
-    printf("╔════════════════════════════════════════════════════════════╗ Score: 0\n");
-    for(int i = 0; i < 20; i++) 
+    setForegroundColor(Gray);
+    printf("╔");
+    for(int j = 0; j < FIELD_WIDTH; j++) { printf("═");}
+    printf("╗");
+    setForegroundColor(White);
+    printf(" Score: 0\n");
+
+    for(int i = 0; i < FIELD_HEIGHT; i++) 
     {
-        printf("║                                                            ║");
+        setForegroundColor(Gray);
+        printf("║");
+        for(int j = 0; j < FIELD_WIDTH; j++) { printf(" ");}
+        printf("║");
         switch(i)
         {
             case 1:
+                setForegroundColor(White);
                 printf(" Controls:");
                 break;
             case 2:
+                setForegroundColor(White);
                 printf(" W - up");
                 break;
             case 3:
+                setForegroundColor(White);
                 printf(" A - left");
                 break;
             case 4:
+                setForegroundColor(White);
                 printf(" S - down");
                 break;
             case 5:
+                setForegroundColor(White);
                 printf(" D - right");
                 break;
         }
         printf("\n");
-    } 
-    printf("╚════════════════════════════════════════════════════════════╝\n");
+    }
+
+    printf("╚");
+    for(int j = 0; j < FIELD_WIDTH; j++) { printf("═");}
+    printf("╝\n");
+    setForegroundColor(White);
 }
