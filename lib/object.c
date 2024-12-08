@@ -2,11 +2,29 @@
 #include "../main.h"
 #include <stdio.h>
 
-//To do: add objectMutate? function to change both the object and the field at the same time
-
-Object* createObject(int x, int y, enum ObjectType type, short** fieldPtr)
+Object createObject(int x, int y, enum ObjectType type, Object*** fieldPtr)
 {
-    // To do: add object creation to tie objects with the field
+    Object obj;
+    obj.x = x;
+    obj.y = y;
+    obj.type = type;
+
+    // Assign object to the field via reference
+    fieldPtr[y][x] = &obj;
+
+    return obj;
+}
+
+void moveObject(Object* obj, int x, int y, Object*** fieldPtr)
+{
+    // Remove object reference from the field
+    fieldPtr[obj->y][obj->y] = NULL;
+
+    obj->x = x;
+    obj->y = y;
+
+    // Assign object to the field via reference
+    fieldPtr[y][x] = obj;   
 }
 
 void printObject(Object* obj, bool hide)
@@ -30,6 +48,8 @@ void printObject(Object* obj, bool hide)
         case Wall:
             setForegroundColor(Gray);
             printf("X");
+            break;
+        default:
             break;
         }
     }

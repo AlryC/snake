@@ -14,17 +14,17 @@ typedef enum Direction {
 struct SnakeLink
 {
     Object base;
-    SnakeLink *next;
-    SnakeLink *prev;
+    SnakeLink* next;
+    SnakeLink* prev;
 };
 
 struct Snake
 {
     Direction direction;
-    SnakeLink *head;
-    SnakeLink *tail;
+    SnakeLink* head;
+    SnakeLink* tail;
 };
 
-void stepSnake(Snake* snake);
-Snake newSnake();
+void stepSnake(Snake* snake, Object*** fieldPtr);
+Snake newSnake(Object*** fieldPtr);
 #endif

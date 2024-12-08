@@ -9,7 +9,7 @@
 
 enum Color foregroundColor = White;
 //short field[FIELD_HEIGHT][FIELD_WIDTH];
-short** field;
+Object*** field;
 Snake s;
 int key;
 
@@ -43,23 +43,18 @@ int main(void)
     printField();
     
     // Allocate memory for the field 2D array
-    field = (short**)malloc(FIELD_HEIGHT * sizeof(short*));
+    field = (Object***)malloc(FIELD_HEIGHT * sizeof(short*));
     for (int i = 0; i < FIELD_HEIGHT; i++) 
     {
-        field[i] = (short*)malloc(FIELD_WIDTH * sizeof(short));
+        field[i] = (Object**)malloc(FIELD_WIDTH * sizeof(short));
     }
 
     // Initialise seed for rand() function
     srand(time(NULL));
 
     // Initialise a snake instance
-    s = newSnake();
-    // Draw the snake
-    printObject(&s.head->base, false); 
-    printObject(&s.head->next->base, false);
-    printObject(&s.tail->base, false);
-
-    
+    s = newSnake(field);
+        
     // Start 2 threads: 1 for keypresses and 1 for the while game cycle
     pthread_t id_key_listener, id_main_while;
     pthread_create(&id_key_listener, NULL, listenKeyPress, NULL);
@@ -111,7 +106,7 @@ void* mainWhile()
                     break;
             }
 
-            stepSnake(&s);
+            stepSnake(&s, field);
             stepdelta = steptime();
         }
     }
