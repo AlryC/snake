@@ -1,30 +1,36 @@
 #include "object.h"
 #include "../main.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-Object createObject(int x, int y, enum ObjectType type, Object*** fieldPtr)
+void createObject(int x, int y, enum ObjectType type, Object*** fieldPtr)
 {
-    Object obj;
-    obj.x = x;
-    obj.y = y;
-    obj.type = type;
+    Object* obj = malloc(sizeof(Object));
+    if (obj == NULL) {
+        printf("\e[5;5HAllocation issue in createObject");
+        return;
+    }    
+
+    obj->x = x;
+    obj->y = y;
+    obj->type = type;
 
     // Assign object to the field via reference
-    fieldPtr[y][x] = &obj;
+    fieldPtr[y][x] = obj;
 
-    return obj;
+    // return obj;
 }
 
 void moveObject(Object* obj, int x, int y, Object*** fieldPtr)
 {
     // Remove object reference from the field
-    fieldPtr[obj->y][obj->y] = NULL;
+    fieldPtr[obj->y][obj->x] = NULL;
 
     obj->x = x;
     obj->y = y;
 
     // Assign object to the field via reference
-    fieldPtr[y][x] = obj;   
+    fieldPtr[y][x] = obj;
 }
 
 void printObject(Object* obj, bool hide)

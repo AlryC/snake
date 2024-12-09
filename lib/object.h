@@ -18,7 +18,7 @@ typedef struct {
     enum ObjectType type;
 } Object;
 
-Object createObject(int x, int y, enum ObjectType type, Object*** fieldPtr);
+void createObject(int x, int y, enum ObjectType type, Object*** fieldPtr);
 void printObject(Object* obj, bool hide);
 void moveObject(Object* obj, int x, int y, Object*** fieldPtr);
 

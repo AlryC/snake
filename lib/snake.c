@@ -3,17 +3,19 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+void headColision(int x, int y, Object*** fieldPtr);
+
 Snake newSnake(Object*** fieldPtr)
 {
     Snake python;
 
-    static SnakeLink head; //= {.base.x = 12, .base.y = 10, .base.type = Snakebody};
-    static SnakeLink body; //= {.base.x = 11, .base.y = 10, .base.type = Snakebody};
-    static SnakeLink tail; //= {.base.x = 10, .base.y = 10, .base.type = Snakebody};
+    static SnakeLink head = {.xKey = 12, .yKey = 10};
+    static SnakeLink body = {.xKey = 11, .yKey = 10};
+    static SnakeLink tail = {.xKey = 10, .yKey = 10};
     
-    head.base = createObject(12, 10, Snakebody, fieldPtr);
-    body.base = createObject(11, 10, Snakebody, fieldPtr);
-    tail.base = createObject(10, 10, Snakebody, fieldPtr);
+    createObject(head.xKey, head.yKey, Snakebody, fieldPtr);
+    createObject(body.xKey, body.yKey, Snakebody, fieldPtr);
+    createObject(tail.xKey, tail.yKey, Snakebody, fieldPtr);
 
     head.next = &body;
     body.prev = &head;
@@ -25,9 +27,9 @@ Snake newSnake(Object*** fieldPtr)
     python.tail = &tail;
 
     // Draw the snake
-    printObject(&head.base, false); 
-    printObject(&body.base, false);
-    printObject(&tail.base, false);
+    printObject(fieldPtr[head.yKey][head.xKey], false); 
+    printObject(fieldPtr[body.yKey][body.xKey], false); 
+    printObject(fieldPtr[tail.yKey][tail.xKey], false); 
 
     return python;
 }
@@ -35,13 +37,13 @@ Snake newSnake(Object*** fieldPtr)
 void stepSnake(Snake* snake, Object*** fieldPtr)
 {
     // Undraw tail element
-    printObject(&snake->tail->base, true);
+    printObject(fieldPtr[snake->tail->yKey][snake->tail->xKey], true);
 
     // Copy head coordinates into tail
     //snake->tail->base->x = snake->head->base->x;
     //snake->tail->base->y = snake->head->base->y;
-    int newX = snake->head->base.x;
-    int newY = snake->head->base.y;
+    int newX = snake->head->xKey;
+    int newY = snake->head->yKey;
 
     switch (snake->direction) 
     {
@@ -55,7 +57,10 @@ void stepSnake(Snake* snake, Object*** fieldPtr)
         case right: newX++; break;
     }
 
-    moveObject(&snake->tail->base, newX, newY, fieldPtr);
+    headColision(newX, newY, fieldPtr);
+    moveObject(fieldPtr[snake->tail->yKey][snake->tail->xKey], newX, newY, fieldPtr);
+    snake->tail->xKey = newX;
+    snake->tail->yKey = newY;
 
     snake->tail->next = snake->head;
 
@@ -66,5 +71,28 @@ void stepSnake(Snake* snake, Object*** fieldPtr)
     snake->head->prev = NULL;
 
        // Draw new head element
-    printObject(&snake->head->base, false);
+    printObject(fieldPtr[snake->head->yKey][snake->head->xKey], false);
+}
+
+void headColision(int x, int y, Object*** fieldPtr)
+{
+    if(fieldPtr[y][x] != NULL)
+    {
+        switch (fieldPtr[y][x]->type)
+        {
+            case Food:
+                printf("\e[0;0H Food detected");
+                break;
+            case Poison:
+                printf("\e[0;0H Poison detected");
+                break;
+            case Wall:
+                printf("\e[0;0H Wall detected");
+                break;
+            case Snakebody:
+                printf("\e[0;0H Snakebody detected");
+                break;
+            
+        }
+    }
 }

@@ -13,7 +13,7 @@ typedef enum Direction {
 
 struct SnakeLink
 {
-    Object base;
+    int xKey, yKey;
     SnakeLink* next;
     SnakeLink* prev;
 };

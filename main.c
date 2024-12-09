@@ -43,11 +43,22 @@ int main(void)
     printField();
     
     // Allocate memory for the field 2D array
-    field = (Object***)malloc(FIELD_HEIGHT * sizeof(short*));
+    field = (Object***)malloc(FIELD_HEIGHT * sizeof(Object**));
     for (int i = 0; i < FIELD_HEIGHT; i++) 
     {
-        field[i] = (Object**)malloc(FIELD_WIDTH * sizeof(short));
+        field[i] = (Object**)malloc(FIELD_WIDTH * sizeof(Object*));
     }
+
+    // Debug
+    createObject(50, 10, Food, field);
+    createObject(15, 5, Food, field);
+    createObject(30, 13, Poison, field);
+    createObject(40, 18, Wall, field);
+    
+    printObject(field[5][15], false);
+    printObject(field[10][50], false);
+    printObject(field[13][30], false);
+    printObject(field[18][40], false);
 
     // Initialise seed for rand() function
     srand(time(NULL));
