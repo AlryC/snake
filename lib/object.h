@@ -6,10 +6,11 @@
 
 enum ObjectType
 {
-    Snakebody,
+    Void,
     Food,
     Poison,
     Wall,
+    Snakebody,
 };
 
 typedef struct {
