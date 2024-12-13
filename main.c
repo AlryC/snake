@@ -4,6 +4,7 @@
 #include <stdio.h>       // Standart Input/Output Library
 #include <time.h>        // Clock
 #include <termios.h>     // Managing termnial in Linux/MacOS
+#include "./lib/event.h"// Field building blocks
 #include "./lib/object.h"// Field building blocks
 #include "./lib/snake.h" // Snake ~~~~~~~~~~>
 
@@ -11,6 +12,7 @@ enum Color foregroundColor = White;
 //short field[FIELD_HEIGHT][FIELD_WIDTH];
 Object*** field;
 Snake s;
+unsigned int currentStep = 0;
 int key;
 
 void  printField();
@@ -118,6 +120,8 @@ void* mainWhile()
             }
 
             stepSnake(&s, field);
+            stepGenEvent(field);
+
             stepdelta = steptime();
         }
     }
