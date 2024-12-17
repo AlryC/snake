@@ -19,6 +19,7 @@ enum Color {
     Magenta,
 };
 
-void  setForegroundColor(enum Color color);
+void setForegroundColor(enum Color color);
+void updateScore(char plusPoints);
 
 #endif

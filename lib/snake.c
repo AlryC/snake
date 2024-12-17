@@ -1,5 +1,6 @@
 #include "snake.h"
 #include "object.h"
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -59,7 +60,7 @@ void stepSnake(Snake* snake, Object*** fieldPtr)
 
     enum ObjectType colision = headColision(newX, newY, fieldPtr);
 
-    // If colision is Void ot Food or Poison
+    // If colision is Void or Food or Poison
     if(colision < 3)
     {
         moveObject(fieldPtr[snake->tail->yKey][snake->tail->xKey], newX, newY, fieldPtr);
@@ -87,6 +88,7 @@ void stepSnake(Snake* snake, Object*** fieldPtr)
                 newTail->yKey = prevY;
                 newTail->prev = snake->tail->prev;
                 snake->tail = newTail;
+                updateScore(1);
                 break;
             case Poison:
 
@@ -110,11 +112,12 @@ enum ObjectType headColision(int x, int y, Object*** fieldPtr)
     {
         return Void;
     }
-    
-    switch (fieldPtr[y][x]->type)
+
+    enum ObjectType type = fieldPtr[y][x]->type;
+    switch (type)
     {
         case Food:
-            printf("\e[0;0H Food detected");
+            printf("\e[0;0H Food detected");            
             break;
         case Poison:
             printf("\e[0;0H Poison detected");
@@ -128,5 +131,6 @@ enum ObjectType headColision(int x, int y, Object*** fieldPtr)
         default: break;
         }
 
-    return fieldPtr[y][x]->type;
+    free(fieldPtr[y][x]);
+    return type;
 }

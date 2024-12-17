@@ -2,6 +2,7 @@
 #include <pthread.h>     // Multithreading
 #include <stdbool.h>     // Booleans
 #include <stdio.h>       // Standart Input/Output Library
+#include <sys/types.h>
 #include <time.h>        // Clock
 #include <termios.h>     // Managing termnial in Linux/MacOS
 #include "./lib/event.h"// Field building blocks
@@ -13,6 +14,7 @@ enum Color foregroundColor = White;
 Object*** field;
 Snake s;
 unsigned int currentStep = 0;
+unsigned int points = 0;
 int key;
 
 void  printField();
@@ -202,4 +204,11 @@ void printField()
     for(int j = 0; j < FIELD_WIDTH; j++) { printf("═");}
     printf("╝\n");
     setForegroundColor(White);
+}
+
+void updateScore(char plusPoints)
+{
+    points += plusPoints;
+    setForegroundColor(White);
+    printf("\e[0;71H%d ", points);
 }
