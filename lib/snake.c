@@ -28,9 +28,9 @@ Snake newSnake(Object*** fieldPtr)
     python.tail = &tail;
 
     // Draw the snake
-    printObject(fieldPtr[head.yKey][head.xKey], false); 
-    printObject(fieldPtr[body.yKey][body.xKey], false); 
-    printObject(fieldPtr[tail.yKey][tail.xKey], false); 
+    printObject(fieldPtr[head.yKey][head.xKey], 1); 
+    printObject(fieldPtr[body.yKey][body.xKey], 1); 
+    printObject(fieldPtr[tail.yKey][tail.xKey], 1); 
 
     return python;
 }
@@ -38,7 +38,7 @@ Snake newSnake(Object*** fieldPtr)
 void stepSnake(Snake* snake, Object*** fieldPtr)
 {
     // Undraw tail element
-    printObject(fieldPtr[snake->tail->yKey][snake->tail->xKey], true);
+    printObject(fieldPtr[snake->tail->yKey][snake->tail->xKey], 0);
 
     // Copy head coordinates into tail
     //snake->tail->base->x = snake->head->base->x;
@@ -49,13 +49,22 @@ void stepSnake(Snake* snake, Object*** fieldPtr)
     switch (snake->direction) 
     {
         // case up: snake->head->base->y--; break;
-        case up: newY--; break;
-        // case left: snake->head->base->x--; break;
-        case left: newX--; break;
-        // case down: snake->head->base->y++; break;
-        case down: newY++; break;
-        // case right: snake->head->base->x++; break;
-        case right: newX++; break;
+        case up:
+            newY--;
+            if(newY < 0) newY = FIELD_HEIGHT - 1;
+            break;
+        case left: 
+            newX--;
+            if(newX < 0) newX = FIELD_WIDTH - 1;
+            break;
+        case down:
+            newY++;
+            if(newY >= FIELD_HEIGHT) newY = 0;
+            break;
+        case right: 
+            newX++; 
+            if(newX >= FIELD_WIDTH) newX = 0;
+            break;
     }
 
     enum ObjectType colision = headColision(newX, newY, fieldPtr);
@@ -98,7 +107,7 @@ void stepSnake(Snake* snake, Object*** fieldPtr)
         snake->head->prev = NULL;
 
         // Draw new head element
-        printObject(fieldPtr[snake->head->yKey][snake->head->xKey], false);
+        printObject(fieldPtr[snake->head->yKey][snake->head->xKey], snake->direction);
         return;
     }
 

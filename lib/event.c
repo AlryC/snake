@@ -31,7 +31,7 @@ void stepGenEvent(Object*** fieldPtr)
             x = rand() % FIELD_WIDTH;
             y = rand() % FIELD_HEIGHT;
             createObject(x, y, Food, fieldPtr);
-            printObject(fieldPtr[y][x], false);
+            printObject(fieldPtr[y][x], 1);
             eventData.stepsUntilFoodSpawn = rand() % 13 + 7;
             break;
         default:

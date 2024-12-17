@@ -20,7 +20,7 @@ typedef struct {
 } Object;
 
 void createObject(int x, int y, enum ObjectType type, Object*** fieldPtr);
-void printObject(Object* obj, bool hide);
+void printObject(Object* obj, unsigned char command);
 void moveObject(Object* obj, int x, int y, Object*** fieldPtr);
 
 #endif

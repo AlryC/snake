@@ -1,5 +1,6 @@
 #include "object.h"
 #include "../main.h"
+#include "snake.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -33,15 +34,27 @@ void moveObject(Object* obj, int x, int y, Object*** fieldPtr)
     fieldPtr[y][x] = obj;
 }
 
-void printObject(Object* obj, bool hide)
+void printObject(Object* obj, unsigned char command)
 {
-    printf("\e[%d;%dH", obj->y+1, obj->x+1);
-    if(!hide)
+    printf("\e[%d;%dH", obj->y+2, obj->x+2);
+
+    if(command == 0)
     {
-        switch (obj->type) {
+        printf(" ");
+        fflush(stdout);
+        return;
+    }
+
+    switch (obj->type) 
+    {
         case Snakebody:
             setForegroundColor(Green);
-            printf("@");
+            switch (command) {
+                case up:   printf("∧"); break;
+                case left: printf("<"); break;
+                case down: printf("V"); break;
+                case right:printf(">"); break;
+            }
             break;
         case Food:
             setForegroundColor(Red);
@@ -57,11 +70,6 @@ void printObject(Object* obj, bool hide)
             break;
         default:
             break;
-        }
-    }
-    else 
-    { 
-        printf(" ");
     }
     fflush(stdout);
 }

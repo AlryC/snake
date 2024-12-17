@@ -59,10 +59,10 @@ int main(void)
     createObject(30, 13, Poison, field);
     createObject(40, 18, Wall, field);
     
-    printObject(field[5][15], false);
-    printObject(field[10][50], false);
-    printObject(field[13][30], false);
-    printObject(field[18][40], false);
+    printObject(field[5][15],  1);
+    printObject(field[10][50], 1);
+    printObject(field[13][30], 1);
+    printObject(field[18][40], 1);
 
     // Initialise seed for rand() function
     srand(time(NULL));
@@ -127,6 +127,7 @@ void* mainWhile()
             stepdelta = steptime();
         }
     }
+    return NULL;
 }
 
 void* listenKeyPress()
@@ -136,11 +137,12 @@ void* listenKeyPress()
         key = getchar();
         // printf("\e[0;0H%d", key);
     }
+    return NULL;
 }
 
 int steptime()
 {
-    return clock() / 200000;
+    return clock() / 100000;
 }
 
 void  setForegroundColor(enum Color color)

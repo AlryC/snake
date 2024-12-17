@@ -8,7 +8,10 @@
 typedef struct SnakeLink SnakeLink;
 typedef struct Snake Snake;
 typedef enum Direction {
-    up, right, down, left
+    up = 1,
+    right = 2,
+    down = 3,
+    left = 4,
 } Direction;
 
 struct SnakeLink
